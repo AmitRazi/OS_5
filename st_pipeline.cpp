@@ -8,7 +8,7 @@
 int seed = -1;
 int index = 0;
 int expectedElements =0;
-std::array<ActiveObject*,4> pipe;
+std::array<ActiveObject*,4> pipeline;
 
 int isPrime(unsigned int num){
 
@@ -39,7 +39,7 @@ void* ActiveObjectLoop(void *arg){
         while(i < expectedElements){
             int num;
             num = (int)rand();
-            pipe[1]->queue->enqueue(num);
+            pipeline[1]->queue->enqueue(num);
             usleep(1000);
             i++;
         }
@@ -62,7 +62,7 @@ void CreateActiveObject(void (*func)(int)){
     AO->queue = queue;
     AO->func = func;
     AO->id = index;
-    pipe[index++] = AO;
+    pipeline[index++] = AO;
     pthread_create(&AO->thread,NULL,ActiveObjectLoop,AO);
 }
 
@@ -73,7 +73,7 @@ void AOfunc2(int num){
             std::cout<<"false\n"<<num<<"\n";
         }
         num+=11;
-        pipe[2]->queue->enqueue(num);
+        pipeline[2]->queue->enqueue(num);
 }
 
 void AOfunc3(int num){
@@ -83,7 +83,7 @@ void AOfunc3(int num){
             std::cout<<"false\n"<<num<<"\n";
         }
         num-=13;
-        pipe[3]->queue->enqueue(num);
+        pipeline[3]->queue->enqueue(num);
 }
 
 void AOfunc4(int num){
@@ -107,14 +107,14 @@ int main(int argc,char* argv[]) {
         expectedElements = atoi(argv[1]);
     }
 
-    std::fill(pipe.begin(),pipe.end(),nullptr);
+    std::fill(pipeline.begin(), pipeline.end(), nullptr);
     CreateActiveObject(NULL);
     CreateActiveObject(AOfunc2);
     CreateActiveObject(AOfunc3);
     CreateActiveObject(AOfunc4);
-    pthread_join(pipe[3]->thread,NULL);
+    pthread_join(pipeline[3]->thread, NULL);
 
-    for (auto& AO : pipe) {
+    for (auto& AO : pipeline) {
         if (AO != nullptr) {
             delete AO->queue;
             delete AO;
