@@ -6,7 +6,7 @@
 
 
 int seed = -1;
-int index = 0;
+int ActiveObjectIndex = 0;
 int expectedElements =0;
 std::array<ActiveObject*,4> pipeline;
 
@@ -61,8 +61,8 @@ void CreateActiveObject(void (*func)(int)){
     ActiveObject *AO = new ActiveObject();
     AO->queue = queue;
     AO->func = func;
-    AO->id = index;
-    pipeline[index++] = AO;
+    AO->id = ActiveObjectIndex;
+    pipeline[ActiveObjectIndex++] = AO;
     pthread_create(&AO->thread,NULL,ActiveObjectLoop,AO);
 }
 
