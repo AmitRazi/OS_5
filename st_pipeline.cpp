@@ -49,7 +49,7 @@ void* ActiveObjectLoop(void *arg){
         AO->func(task);
     }
 
-
+    return NULL;
 }
 
 concurrentQueue* getQueue(ActiveObject* AO){
